@@ -15,8 +15,14 @@ namespace ChemWriter
         public const int MIN_OLD_PROCEDURAL = 104;
         public const int MIN_OLD_TRIVIAL = 101;
 
-        public int minSystematic = 1;
-        public int maxSystematic = int.MaxValue;
+        public Config(UInt64 min, UInt64 max)
+        {
+            minSystematic = min;
+            maxSystematic = max;
+        }
+
+        public UInt64 minSystematic { get; private set; }
+        public UInt64 maxSystematic { get; private set; }
 
         public static bool DEBUG = false;
     }

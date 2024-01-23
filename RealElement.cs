@@ -8,7 +8,7 @@ namespace ChemWriter
 {
     internal class RealElement : Element
     {
-        public RealElement(int atomicNumber, string symbol, string name)
+        public RealElement(UInt64 atomicNumber, string symbol, string name)
         {
             Symbol = symbol;
             Name = name;

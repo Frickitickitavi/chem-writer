@@ -21,14 +21,14 @@ namespace ChemWriter
             Name = DeriveName(AtomicNumber);
         }
 
-        public ProceduralElement(int num)
+        public ProceduralElement(UInt64 num)
         {
             AtomicNumber = num;
             Symbol = DeriveSymbol(num);
             Name = DeriveName(num);
         }
 
-        private static string DeriveSymbol(int num)
+        private static string DeriveSymbol(UInt64 num)
         {
             var numStr = num.ToString();
             var sym = "";
@@ -41,7 +41,7 @@ namespace ChemWriter
             return Char.ToUpper(sym[0]) + sym[1..];
         }
 
-        private string DeriveName(int num)
+        private string DeriveName(UInt64 num)
         {
             var name = "";
             var numStr = num.ToString();
@@ -77,13 +77,13 @@ namespace ChemWriter
             return name;
         }
 
-        public static int DeriveNumber(string sym)
+        public static UInt64 DeriveNumber(string sym)
         {
-            var num = 0;
+            UInt64 num = 0;
 
             for (var i = 0; i < sym.Length; i++)
             {
-                num = Chars.IndexOf(sym[i]) + num * 10;
+                num = (UInt64)Chars.IndexOf(sym[i]) + num * 10;
             }
 
             return num;
@@ -119,7 +119,7 @@ namespace ChemWriter
 
         private static ProceduralElement AugmentProceduralElement(char c, ProceduralElement prev)
         {
-            return new ProceduralElement(prev.AtomicNumber * 10 + Chars.IndexOf(c));
+            return new ProceduralElement(prev.AtomicNumber * (UInt64)10 + (UInt64)Chars.IndexOf(c));
         }
 
         public static List<Element> MinimizeProceduralElements(List<Element> ans)
@@ -138,14 +138,14 @@ namespace ChemWriter
             
         }
 
-        private static bool InRange(int i, int min, int max)
+        private static bool InRange(UInt64 i, UInt64 min, UInt64 max)
         {
             return min <= i && i <= max;
         }
 
         private bool HasRedundantSymbol()
         {
-            return Program.Do(Symbol, new Config() { minSystematic = 0, maxSystematic = 0 }, new(), new()).isComplete;
+            return Program.Do(Symbol, new Config(0, 0), new(), new()).isComplete;
         }
     }
 }

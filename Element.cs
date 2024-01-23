@@ -10,7 +10,7 @@ namespace ChemWriter
     {
         public string Symbol { get; set; }
         public string Name { get; set; }
-        public int AtomicNumber { get; set; }
+        public UInt64 AtomicNumber { get; set; }
 
         public override string ToString()
         {

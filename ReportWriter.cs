@@ -25,7 +25,7 @@ namespace ChemWriter
 
         public static void PrintSuccess(List<List<Element>> answers)
         {
-            PrintAnswers(answers);
+            var dict = PrintAnswers(answers);
             SetColor(SUCCESS);
             Print("");
             Print("################################################################");
@@ -34,13 +34,27 @@ namespace ChemWriter
             Print("###                                                          ###");
             Print("################################################################");
             Print("");
-            Print($"Total Answers: {answers.Count}");
+            SetColor(REAL);
+            Print($"Tier 0 Answers: {dict[0]}");
+            SetColor(ATTEMPTED);
+            Print($"Tier 1 Answers: {dict[1]}");
+            SetColor(THEORETICAL);
+            Print($"Tier 2 Answers: {dict[2]}");
+            SetColor(INFINITE);
+            Print($"Tier 3 Answers: {dict[3]}");
+            SetColor(OLD);
+            Print($"Tier 4 Answers: {dict[4]}");
+            SetColor(TRIVIAL);
+            Print($"Tier 5 Answers: {dict[5]}");
+            SetColor(REDUNDANT);
+            Print($"Tier 6 Answers: {dict[6]}");
             SetColor(DEFAULT);
+            Print($"Total Answers:  {answers.Count}");
         }
 
         public static void PrintPartial(List<List<Element>> answers, string orig)
         {
-            PrintAnswers(answers);
+            var dict = PrintAnswers(answers);
 
             SetColor(PARTIAL);
             Print("");
@@ -57,7 +71,22 @@ namespace ChemWriter
             Print($"Input Length:  {inLen} characters");
             Print($"Output Length: {outLen} characters ({orig[..outLen]})");
             Print($"Percentage:    {Decimal.Divide(outLen, inLen) * 100}%");
-            Print($"Total Answers: {answers.Count}");
+            SetColor(REAL);
+            Print($"Tier 0 Answers: {dict[0]}");
+            SetColor(ATTEMPTED);
+            Print($"Tier 1 Answers: {dict[1]}");
+            SetColor(THEORETICAL);
+            Print($"Tier 2 Answers: {dict[2]}");
+            SetColor(INFINITE);
+            Print($"Tier 3 Answers: {dict[3]}");
+            SetColor(OLD);
+            Print($"Tier 4 Answers: {dict[4]}");
+            SetColor(TRIVIAL);
+            Print($"Tier 5 Answers: {dict[5]}");
+            SetColor(REDUNDANT);
+            Print($"Tier 6 Answers: {dict[6]}");
+            SetColor(DEFAULT);
+            Print($"Total Answers:  {answers.Count}");
 
             SetColor(DEFAULT);
         }
@@ -106,15 +135,21 @@ namespace ChemWriter
             Console.Write(message);
         }
 
-        private static void PrintAnswers(List<List<Element>> answers)
+        private static Dictionary<int, int> PrintAnswers(List<List<Element>> answers)
         {
             var conds = new List<Func<Element, bool>>() { e => e is RealElement };
+
+            var amt = answers.Count();
+            var dict = new Dictionary<int, int>();
+
             var remaining = PrintAnswerSet(
                 answers, 
                 conds, 
                 "SOLUTIONS WITH ONLY REAL ELEMENTS", 
                 REAL
             );
+            dict.Add(0, amt - remaining.Count());
+            amt = remaining.Count();
 
             conds.Add(e => Config.MAX_REAL < e.AtomicNumber && e.AtomicNumber <= Config.MAX_ATTEMPTED);
             remaining = PrintAnswerSet(
@@ -124,6 +159,8 @@ namespace ChemWriter
                 ATTEMPTED,
                 "*"
             );
+            dict.Add(1, amt - remaining.Count());
+            amt = remaining.Count();
 
             conds.Add(e => Config.MAX_ATTEMPTED < e.AtomicNumber && e.AtomicNumber <= Config.MAX_THEORETICAL);
             remaining = PrintAnswerSet(
@@ -133,6 +170,8 @@ namespace ChemWriter
                 THEORETICAL,
                 "**"
             );
+            dict.Add(2, amt - remaining.Count());
+            amt = remaining.Count();
 
             conds.Add(e => Config.MAX_THEORETICAL < e.AtomicNumber);
             remaining = PrintAnswerSet(
@@ -141,6 +180,8 @@ namespace ChemWriter
                 $"IF WE ALSO ALLOW THEORETICAL ELEMENTS ABOVE {Config.MAX_THEORETICAL}",
                 INFINITE
             );
+            dict.Add(3, amt - remaining.Count());
+            amt = remaining.Count();
 
             conds.Add(e => Config.MIN_OLD_PROCEDURAL < e.AtomicNumber);
             remaining = PrintAnswerSet(
@@ -150,6 +191,8 @@ namespace ChemWriter
                 OLD,
                 "***"
             );
+            dict.Add(4, amt - remaining.Count());
+            amt = remaining.Count();
 
             conds.Add(e => Config.MIN_OLD_TRIVIAL < e.AtomicNumber);
             remaining = PrintAnswerSet(
@@ -159,6 +202,8 @@ namespace ChemWriter
                 TRIVIAL,
                 "****"
             );
+            dict.Add(5, amt - remaining.Count());
+            amt = remaining.Count();
 
             remaining = PrintAnswerSet(
                 remaining,
@@ -166,8 +211,11 @@ namespace ChemWriter
                 $"IF WE ALSO ALLOW REDUNDANT SYSTEMATIC NAMES FOR ALL ELEMENTS",
                 REDUNDANT
             );
+            dict.Add(6, amt);
 
             PrintKey();
+
+            return dict;
         }
 
         private static void PrintKey()
