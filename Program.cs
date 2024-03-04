@@ -11,12 +11,15 @@ namespace ChemWriter {
         
         public static void Main()
         {
-            Console.Write("Enter a phrase: ");
+            Console.Write("Enter a phrase (/q to quit): ");
 
             while (true)
             {
 
                 var raw = Console.ReadLine();
+
+                if (raw == "/q") return;
+
                 Console.Write(
                     "How would you like the script to handle systematic element names?\n" +
                     "\n" +
@@ -27,7 +30,7 @@ namespace ChemWriter {
                     $"4 - Allow any undiscovered systematic element, and old systematic names for elements that have since been properly named ({Config.MIN_OLD_PROCEDURAL}+)\n" +
                     $"5 - Allow any undiscovered systematic element, and any systematic names that have ever been formally used, even if only as alternatives for already-named elements ({Config.MIN_OLD_TRIVIAL}+)\n" +
                     $"6 - Allow any systematic element name whatsoever, even if completely redundant with a named element (1+)\n" +
-                    $"7 - Specify a custom range of acceptable systematic elements\n" +
+                    $"7 - Specify a custom range of acceptable systematic elements (not yet implemented)\n" +
                     $"\n" +
                     $"Enter the number corresponding to your choice (default 6): "
                 );
@@ -77,7 +80,7 @@ namespace ChemWriter {
                     ReportWriter.PrintFailure();
                 }
 
-                Console.Write("\nIf you would like to go again, enter another phrase: ");
+                Console.Write("\nIf you would like to go again, enter another phrase (/q to quit): ");
             }
         }
 
